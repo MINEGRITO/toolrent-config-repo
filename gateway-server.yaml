@@ -1,0 +1,16 @@
+eureka:
+  instance:
+    hostname: localhost
+  client:
+    register-with-eureka: true # El Gateway si se registra para que lo vean (opcional, pero recomendado)
+    fetch-registry: true       # OBLIGATORIO: Necesita descargar la lista de servicios para saber dónde enviar el tráfico
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+
+spring:
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true # <--- LA MAGIA: Crea rutas automáticas basadas en los nombres de Eureka
+          lower-case-service-id: true # Permite usar minúsculas en la URL (ej: /inventario/...) aunque en Eureka esté en MAYÚSCULAS
