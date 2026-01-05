@@ -33,6 +33,7 @@ spring:
           uri: lb://ms-inventario
           predicates:
             - Path=/api/tools/**:
+          filters:
             - AuthenticationFilter # <--- El guardia de seguridad
 
         # --- 3. CLIENTES (PRIVADO) ---
