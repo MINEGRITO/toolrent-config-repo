@@ -32,7 +32,7 @@ spring:
         - id: ms-inventario
           uri: lb://ms-inventario
           predicates:
-            - Path=/api/tools/**:
+            - Path=/api/tools/**
           filters:
             - AuthenticationFilter # <--- El guardia de seguridad
 
