@@ -1,9 +1,12 @@
+server:
+  port: 8080 # Puerto estándar para el Gateway
+
 eureka:
   instance:
     hostname: localhost
   client:
-    register-with-eureka: true # El Gateway si se registra para que lo vean (opcional, pero recomendado)
-    fetch-registry: true       # OBLIGATORIO: Necesita descargar la lista de servicios para saber dónde enviar el tráfico
+    register-with-eureka: true
+    fetch-registry: true
     service-url:
       defaultZone: http://localhost:8761/eureka/
 
@@ -12,5 +15,62 @@ spring:
     gateway:
       discovery:
         locator:
-          enabled: true # <--- LA MAGIA: Crea rutas automáticas basadas en los nombres de Eureka
-          lower-case-service-id: true # Permite usar minúsculas en la URL (ej: /inventario/...) aunque en Eureka esté en MAYÚSCULAS
+          enabled: true 
+          lower-case-service-id: true
+      
+      # AQUÍ DEFINIMOS LA SEGURIDAD POR RUTA
+      routes:
+        
+        # --- 1. AUTENTICACIÓN (PÚBLICO) ---
+        # NO lleva filtro de seguridad, porque si no, nadie podría loguearse
+        - id: ms-auth
+          uri: lb://ms-auth
+          predicates:
+            - Path=/auth/**
+
+        # --- 2. INVENTARIO (PRIVADO) ---
+        - id: ms-inventario
+          uri: lb://ms-inventario
+          predicates:
+            - Path=/api/tools/**:
+            - AuthenticationFilter # <--- El guardia de seguridad
+
+        # --- 3. CLIENTES (PRIVADO) ---
+        - id: ms-clientes
+          uri: lb://ms-clientes
+          predicates:
+            - Path=/api/customers/**
+          filters:
+            - AuthenticationFilter
+
+        # --- 4. PRESTAMOS (PRIVADO) ---
+        - id: ms-prestamos
+          uri: lb://ms-prestamos
+          predicates:
+            - Path=/api/loans/**
+          filters:
+            - AuthenticationFilter
+
+        # --- 5. REPORTES (PRIVADO) ---
+        - id: ms-reports
+          uri: lb://ms-reports
+          predicates:
+            - Path=/api/reports/**
+          filters:
+            - AuthenticationFilter
+
+        # --- 6. TARIFAS (PRIVADO) ---
+        - id: ms-tarifas
+          uri: lb://ms-tarifas
+          predicates:
+            - Path=/api/rates/**
+          filters:
+            - AuthenticationFilter
+
+        # --- 7. KARDEX (PRIVADO) ---
+        - id: ms-kardex
+          uri: lb://ms-kardex
+          predicates:
+            - Path=/api/kardex/**
+          filters:
+            - AuthenticationFilter
