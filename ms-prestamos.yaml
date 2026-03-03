@@ -14,8 +14,17 @@ spring:
     username: postgres
     password: pass
     driver-class-name: org.postgresql.Driver
+    hikari:
+      pool-name: loans-hikari
+      maximum-pool-size: 30
+      minimum-idle: 10
+      connection-timeout: 10000
+      idle-timeout: 600000
+      max-lifetime: 1800000
+      leak-detection-threshold: 60000
+
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
       ddl-auto: update
-    show-sql: true
+    show-sql: false
