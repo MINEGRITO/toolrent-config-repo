@@ -16,8 +16,8 @@ spring:
     driver-class-name: org.postgresql.Driver
     hikari:
       pool-name: loans-hikari
-      maximum-pool-size: 30
-      minimum-idle: 10
+      maximum-pool-size: 15
+      minimum-idle: 5
       connection-timeout: 10000
       idle-timeout: 600000
       max-lifetime: 1800000
